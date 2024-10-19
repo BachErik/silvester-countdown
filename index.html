@@ -134,19 +134,19 @@
 <body>
     <div id="countdown-container">
         <h1>New Year's Eve Countdown</h1>
-        <div class="time-segment">
+        <div class="time-segment" id="days-segment">
             <div class="countdown" id="days">00</div>
             <div class="label">Days</div>
         </div>
-        <div class="time-segment">
+        <div class="time-segment" id="hours-segment">
             <div class="countdown" id="hours">00</div>
             <div class="label">Hours</div>
         </div>
-        <div class="time-segment">
+        <div class="time-segment" id="minutes-segment">
             <div class="countdown" id="minutes">00</div>
             <div class="label">Minutes</div>
         </div>
-        <div class="time-segment">
+        <div class="time-segment" id="seconds-segment">
             <div class="countdown" id="seconds">00</div>
             <div class="label">Seconds</div>
         </div>
@@ -173,9 +173,27 @@
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
             // Update the elements
-            document.getElementById('days').innerHTML = days < 10 ? '0' + days : days;
-            document.getElementById('hours').innerHTML = hours < 10 ? '0' + hours : hours;
-            document.getElementById('minutes').innerHTML = minutes < 10 ? '0' + minutes : minutes;
+            if (days > 0) {
+                document.getElementById('days').innerHTML = days < 10 ? '0' + days : days;
+                document.getElementById('days-segment').style.display = 'inline-block';
+            } else {
+                document.getElementById('days-segment').style.display = 'none';
+            }
+
+            if (hours > 0 || days > 0) {
+                document.getElementById('hours').innerHTML = hours < 10 ? '0' + hours : hours;
+                document.getElementById('hours-segment').style.display = 'inline-block';
+            } else {
+                document.getElementById('hours-segment').style.display = 'none';
+            }
+
+            if (minutes > 0 || hours > 0 || days > 0) {
+                document.getElementById('minutes').innerHTML = minutes < 10 ? '0' + minutes : minutes;
+                document.getElementById('minutes-segment').style.display = 'inline-block';
+            } else {
+                document.getElementById('minutes-segment').style.display = 'none';
+            }
+
             document.getElementById('seconds').innerHTML = seconds < 10 ? '0' + seconds : seconds;
 
             // If the countdown is over
