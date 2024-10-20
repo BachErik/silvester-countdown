@@ -43,6 +43,7 @@
             font-size: 4rem;
             letter-spacing: 2px;
             margin: 15px 0;
+            animation: pulse 1s infinite;
         }
 
         .label {
@@ -70,10 +71,6 @@
                 transform: scale(1);
                 opacity: 1;
             }
-        }
-
-        .countdown {
-            animation: pulse 1s infinite;
         }
 
         .firework {
@@ -109,13 +106,12 @@
         }
 
         .confetti {
-            position: absolute; /* Adjusted to absolute positioning */
+            position: absolute;
             width: 10px;
             height: 10px;
-            background-color: red;
             opacity: 0.8;
             top: -10px;
-            z-index: 9999; /* Ensure confetti is on top */
+            z-index: 9999;
             animation: fall 5s linear infinite;
         }
 
@@ -152,7 +148,6 @@
 
     <h1 id="celebrate-text">🎉 Happy New Year! 🎉</h1>
 
-    <!-- Fireworks and Confetti elements -->
     <div id="fireworks"></div>
     <div id="confetti-container"></div>
 
@@ -160,15 +155,12 @@
         const getNextNewYear = () => {
             const now = new Date();
             const year = now.getFullYear();
-            return now.getMonth() === 0 && now.getDate() === 1
-                ? new Date(year + 1, 0, 1, 0, 0, 0)  // Next year if today is New Year's Day
-                : new Date(year, 11, 31, 23, 59, 59);  // This year's New Year's Eve
+            return (now.getMonth() === 0 && now.getDate() === 1)
+                ? new Date(year + 1, 0, 1, 0, 0, 0)
+                : new Date(year, 11, 31, 23, 59, 59);
         };
 
-        const isGermanLocale = () => {
-            const language = navigator.language || navigator.userLanguage;
-            return language.startsWith('de');  // Simulate checking for German locales
-        };
+        const isGermanLocale = () => navigator.language.startsWith('de');
 
         const targetDate = getNextNewYear().getTime();
         let countdownExpired = false;
@@ -177,13 +169,11 @@
             const now = new Date().getTime();
             const distance = targetDate - now;
 
-            // Calculate time parts
             const days = Math.floor(distance / (1000 * 60 * 60 * 24));
             const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // Update the countdown display
             updateCountdownDisplay(days, hours, minutes, seconds);
 
             if (distance < 0) {
@@ -196,32 +186,23 @@
         };
 
         const updateCountdownDisplay = (days, hours, minutes, seconds) => {
-            if (days > 0) {
-                document.getElementById('days').innerHTML = days < 10 ? '0' + days : days;
-                document.getElementById('days-segment').style.display = 'inline-block';
-            } else {
-                document.getElementById('days-segment').style.display = 'none';
-            }
-            if (hours > 0 || days > 0) {
-                document.getElementById('hours').innerHTML = hours < 10 ? '0' + hours : hours;
-                document.getElementById('hours-segment').style.display = 'inline-block';
-            } else {
-                document.getElementById('hours-segment').style.display = 'none';
-            }
-            if (minutes > 0 || hours > 0 || days > 0) {
-                document.getElementById('minutes').innerHTML = minutes < 10 ? '0' + minutes : minutes;
-                document.getElementById('minutes-segment').style.display = 'inline-block';
-            } else {
-                document.getElementById('minutes-segment').style.display = 'none';
-            }
-            document.getElementById('seconds').innerHTML = seconds < 10 ? '0' + seconds : seconds;
+            document.getElementById('days-segment').style.display = days > 0 ? 'inline-block' : 'none';
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+
+            document.getElementById('hours-segment').style.display = hours > 0 || days > 0 ? 'inline-block' : 'none';
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+
+            document.getElementById('minutes-segment').style.display = minutes > 0 || hours > 0 || days > 0 ? 'inline-block' : 'none';
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
         };
 
         const triggerCelebration = () => {
             document.getElementById('countdown-container').style.display = 'none';
             document.getElementById('celebrate-text').style.display = 'block';
             createFireworks();
-            createConfetti(); // Trigger confetti immediately when the countdown hits zero
+            createConfetti();
         };
 
         const createFireworks = () => {
@@ -239,13 +220,12 @@
 
         const createConfetti = () => {
             const confettiContainer = document.getElementById('confetti-container');
-            confettiContainer.innerHTML = ''; // Clear previous confetti, if any
             for (let i = 0; i < 200; i++) {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti');
                 confetti.style.backgroundColor = getRandomColor();
-                confetti.style.left = Math.random() * window.innerWidth + 'px'; // Random horizontal position
-                confetti.style.animationDuration = (Math.random() * 3 + 3) + 's'; // Random animation duration
+                confetti.style.left = Math.random() * window.innerWidth + 'px';
+                confetti.style.animationDuration = (Math.random() * 3 + 3) + 's';
                 confettiContainer.appendChild(confetti);
             }
         };
@@ -256,11 +236,11 @@
         };
 
         if (isGermanLocale()) {
-            document.getElementById('countdown-title').innerHTML = 'Silvester Countdown';
-            document.getElementById('days-label').innerHTML = 'Tage';
-            document.getElementById('hours-label').innerHTML = 'Stunden';
-            document.getElementById('minutes-label').innerHTML = 'Minuten';
-            document.getElementById('seconds-label').innerHTML = 'Sekunden';
+            document.getElementById('countdown-title').textContent = 'Silvester Countdown';
+            document.getElementById('days-label').textContent = 'Tage';
+            document.getElementById('hours-label').textContent = 'Stunden';
+            document.getElementById('minutes-label').textContent = 'Minuten';
+            document.getElementById('seconds-label').textContent = 'Sekunden';
         }
 
         const interval = setInterval(countdown, 1000);
