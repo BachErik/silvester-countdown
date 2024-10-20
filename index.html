@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>New Year's Eve Countdown</title>
     <style>
-        /* All your previous styles */
         * {
             margin: 0;
             padding: 0;
@@ -77,7 +76,6 @@
             animation: pulse 1s infinite;
         }
 
-        /* Fireworks */
         .firework {
             position: absolute;
             width: 5px;
@@ -110,7 +108,6 @@
             z-index: 20;
         }
 
-        /* Confetti styles */
         .confetti {
             position: fixed;
             width: 10px;
@@ -174,6 +171,7 @@
         };
 
         const targetDate = getNextNewYear().getTime();
+        const confettiTimeout = 5 * 60 * 1000; // Five minutes in milliseconds
         let countdownExpired = false;
 
         const countdown = () => {
@@ -186,7 +184,34 @@
             const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            // Update the elements
+            // Update the countdown display
+            updateCountdownDisplay(days, hours, minutes, seconds);
+
+            if (distance < 0) {
+                const timeSinceNewYear = Math.abs(distance);
+                
+                // Trigger celebration within the first five minutes of the new year
+                if (!countdownExpired) {
+                    triggerCelebration();
+                    countdownExpired = true;
+                }
+                
+                // Show confetti for the first five minutes after midnight
+                if (timeSinceNewYear < confettiTimeout) {
+                    createConfetti();
+                }
+
+                // Reset for the next year after 5 minutes
+                if (timeSinceNewYear >= confettiTimeout) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        location.reload(); // Reload page to start new countdown
+                    }, confettiTimeout - timeSinceNewYear);
+                }
+            }
+        };
+
+        const updateCountdownDisplay = (days, hours, minutes, seconds) => {
             if (days > 0) {
                 document.getElementById('days').innerHTML = days < 10 ? '0' + days : days;
                 document.getElementById('days-segment').style.display = 'inline-block';
@@ -205,33 +230,14 @@
             } else {
                 document.getElementById('minutes-segment').style.display = 'none';
             }
-
-            // Update countdown labels and values
-            document.getElementById('days').innerHTML = days < 10 ? '0' + days : days;
-            document.getElementById('hours').innerHTML = hours < 10 ? '0' + hours : hours;
-            document.getElementById('minutes').innerHTML = minutes < 10 ? '0' + minutes : minutes;
             document.getElementById('seconds').innerHTML = seconds < 10 ? '0' + seconds : seconds;
-
-            // If the countdown is over, show celebration and reset for the next year
-            if (distance < 0) {
-                clearInterval(interval);
-                if (!countdownExpired) {
-                    triggerCelebration();
-                    countdownExpired = true;
-                }
-
-                // Reset for next year countdown after 5 minutes
-                setTimeout(() => {
-                    location.reload();  // Reset page to start new countdown
-                }, 5 * 60 * 1000);
-            }
         };
 
         const triggerCelebration = () => {
             document.getElementById('countdown-container').style.display = 'none';
             document.getElementById('celebrate-text').style.display = 'block';
             createFireworks();
-            createConfetti();
+            createConfetti(); // Trigger confetti once when the countdown hits zero
         };
 
         const createFireworks = () => {
@@ -264,7 +270,6 @@
             return colors[Math.floor(Math.random() * colors.length)];
         };
 
-        // Initial setup for language
         if (isGermanLocale()) {
             document.getElementById('countdown-title').innerHTML = 'Silvester Countdown';
             document.getElementById('days-label').innerHTML = 'Tage';
@@ -273,7 +278,6 @@
             document.getElementById('seconds-label').innerHTML = 'Sekunden';
         }
 
-        // Update the countdown every 1 second
         const interval = setInterval(countdown, 1000);
         countdown();
     </script>
