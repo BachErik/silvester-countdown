@@ -109,14 +109,14 @@
         }
 
         .confetti {
-            position: fixed;
+            position: absolute; /* Adjusted to absolute positioning */
             width: 10px;
             height: 10px;
             background-color: red;
             opacity: 0.8;
             top: -10px;
+            z-index: 9999; /* Ensure confetti is on top */
             animation: fall 5s linear infinite;
-            z-index: 15;
         }
 
         @keyframes fall {
@@ -171,7 +171,6 @@
         };
 
         const targetDate = getNextNewYear().getTime();
-        const confettiTimeout = 5 * 60 * 1000; // Five minutes in milliseconds
         let countdownExpired = false;
 
         const countdown = () => {
@@ -188,25 +187,10 @@
             updateCountdownDisplay(days, hours, minutes, seconds);
 
             if (distance < 0) {
-                const timeSinceNewYear = Math.abs(distance);
-                
-                // Trigger celebration within the first five minutes of the new year
+                clearInterval(interval);
                 if (!countdownExpired) {
                     triggerCelebration();
                     countdownExpired = true;
-                }
-                
-                // Show confetti for the first five minutes after midnight
-                if (timeSinceNewYear < confettiTimeout) {
-                    createConfetti();
-                }
-
-                // Reset for the next year after 5 minutes
-                if (timeSinceNewYear >= confettiTimeout) {
-                    clearInterval(interval);
-                    setTimeout(() => {
-                        location.reload(); // Reload page to start new countdown
-                    }, confettiTimeout - timeSinceNewYear);
                 }
             }
         };
@@ -237,7 +221,7 @@
             document.getElementById('countdown-container').style.display = 'none';
             document.getElementById('celebrate-text').style.display = 'block';
             createFireworks();
-            createConfetti(); // Trigger confetti once when the countdown hits zero
+            createConfetti(); // Trigger confetti immediately when the countdown hits zero
         };
 
         const createFireworks = () => {
@@ -255,12 +239,13 @@
 
         const createConfetti = () => {
             const confettiContainer = document.getElementById('confetti-container');
+            confettiContainer.innerHTML = ''; // Clear previous confetti, if any
             for (let i = 0; i < 200; i++) {
                 const confetti = document.createElement('div');
                 confetti.classList.add('confetti');
                 confetti.style.backgroundColor = getRandomColor();
-                confetti.style.left = Math.random() * window.innerWidth + 'px';
-                confetti.style.animationDuration = (Math.random() * 3 + 3) + 's';
+                confetti.style.left = Math.random() * window.innerWidth + 'px'; // Random horizontal position
+                confetti.style.animationDuration = (Math.random() * 3 + 3) + 's'; // Random animation duration
                 confettiContainer.appendChild(confetti);
             }
         };
