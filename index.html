@@ -1,261 +1,440 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>New Year's Eve Countdown</title>
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      /* ---------------------------
+       Base layout / reset
+       --------------------------- */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-            font-family: 'Arial', sans-serif;
-            color: white;
-            text-align: center;
-            overflow: hidden;
-        }
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
 
-        #countdown-container {
-            display: inline-block;
-            padding: 20px;
-            border-radius: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            position: relative;
-            z-index: 10;
-        }
+        /* A cozy night-sky-ish gradient */
+        background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
 
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
+        font-family: Arial, sans-serif;
+        color: white;
+        text-align: center;
+        overflow: hidden; /* Keep confetti/fireworks contained */
+      }
 
-        .countdown {
-            font-size: 4rem;
-            letter-spacing: 2px;
-            margin: 15px 0;
-            animation: pulse 1s infinite;
-        }
+      /* ---------------------------
+       Countdown card
+       --------------------------- */
+      #countdown-container {
+        display: inline-block;
+        padding: 20px 22px;
+        border-radius: 15px;
+        background: rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        position: relative;
+        z-index: 10;
+        backdrop-filter: blur(6px);
+      }
 
-        .label {
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-top: 5px;
-        }
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
 
-        .time-segment {
-            display: inline-block;
-            margin: 0 10px;
-        }
+      .time-segment {
+        display: inline-block;
+        margin: 0 10px;
+        min-width: 90px; /* Helps keep the layout stable */
+      }
 
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.1);
-                opacity: 0.7;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
+      .countdown {
+        font-size: 4rem;
+        letter-spacing: 2px;
+        margin: 15px 0 6px;
+        animation: pulse 1s infinite;
+      }
 
-        .firework {
-            position: absolute;
-            width: 5px;
-            height: 5px;
-            background-color: transparent;
-            border-radius: 50%;
-            animation: explode 1.5s infinite;
-            pointer-events: none;
-        }
+      .label {
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.9;
+      }
 
-        @keyframes explode {
-            0% {
-                transform: translate(0, 0);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(calc(150px * (var(--tx, 1))), calc(150px * (var(--ty, 1))));
-                opacity: 0;
-            }
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          opacity: 1;
         }
-
-        #celebrate-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 4rem;
-            text-shadow: 4px 4px 20px rgba(255, 255, 255, 0.7);
-            display: none;
-            z-index: 20;
+        50% {
+          transform: scale(1.08);
+          opacity: 0.75;
         }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
 
+      /* ---------------------------
+       Celebration text
+       --------------------------- */
+      #celebrate-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4rem;
+        text-shadow: 4px 4px 20px rgba(255, 255, 255, 0.7);
+        display: none;
+        z-index: 20;
+        padding: 0 12px;
+        white-space: nowrap;
+      }
+
+      /* ---------------------------
+       Fireworks particles
+       Each particle animates "outward" from its origin.
+       --------------------------- */
+      .firework {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: transparent; /* We'll draw via box-shadow for a sparkle effect */
+        pointer-events: none;
+        z-index: 5;
+        animation: explode 1.5s infinite;
+      }
+
+      @keyframes explode {
+        0% {
+          transform: translate(0, 0);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(
+            calc(160px * (var(--tx, 1))),
+            calc(160px * (var(--ty, 1)))
+          );
+          opacity: 0;
+        }
+      }
+
+      /* ---------------------------
+       Confetti squares
+       --------------------------- */
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        opacity: 0.85;
+        top: -12px;
+        z-index: 9999;
+        pointer-events: none;
+        animation: fall 5s linear infinite;
+      }
+
+      @keyframes fall {
+        0% {
+          transform: translateY(0) rotate(0deg);
+        }
+        100% {
+          transform: translateY(110vh) rotate(360deg);
+        }
+      }
+
+      /* ---------------------------
+       Accessibility: respect reduced motion preference
+       --------------------------- */
+      @media (prefers-reduced-motion: reduce) {
+        .countdown,
+        .firework,
         .confetti {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            opacity: 0.8;
-            top: -10px;
-            z-index: 9999;
-            animation: fall 5s linear infinite;
+          animation: none !important;
         }
-
-        @keyframes fall {
-            0% {
-                transform: translateY(0) rotate(0);
-            }
-            100% {
-                transform: translateY(100vh) rotate(360deg);
-            }
-        }
+      }
     </style>
-</head>
-<body>
-    <div id="countdown-container">
-        <h1 id="countdown-title">New Year's Eve Countdown</h1>
+  </head>
+
+  <body>
+    <!-- Countdown card -->
+    <div
+      id="countdown-container"
+      role="group"
+      aria-label="Countdown to New Year"
+    >
+      <h1 id="countdown-title">New Year's Eve Countdown</h1>
+
+      <!-- aria-live so screen readers get updates without being too spammy -->
+      <div aria-live="polite" aria-atomic="true">
         <div class="time-segment" id="days-segment">
-            <div class="countdown" id="days"></div>
-            <div class="label" id="days-label">Days</div>
+          <div class="countdown" id="days">00</div>
+          <div class="label" id="days-label">Days</div>
         </div>
+
         <div class="time-segment" id="hours-segment">
-            <div class="countdown" id="hours"></div>
-            <div class="label" id="hours-label">Hours</div>
+          <div class="countdown" id="hours">00</div>
+          <div class="label" id="hours-label">Hours</div>
         </div>
+
         <div class="time-segment" id="minutes-segment">
-            <div class="countdown" id="minutes"></div>
-            <div class="label" id="minutes-label">Minutes</div>
+          <div class="countdown" id="minutes">00</div>
+          <div class="label" id="minutes-label">Minutes</div>
         </div>
+
         <div class="time-segment" id="seconds-segment">
-            <div class="countdown" id="seconds"></div>
-            <div class="label" id="seconds-label">Seconds</div>
+          <div class="countdown" id="seconds">00</div>
+          <div class="label" id="seconds-label">Seconds</div>
         </div>
+      </div>
     </div>
 
+    <!-- Celebration overlay -->
     <h1 id="celebrate-text">🎉 Happy New Year! 🎉</h1>
 
-    <div id="fireworks"></div>
-    <div id="confetti-container"></div>
+    <!-- Effect layers -->
+    <div id="fireworks" aria-hidden="true"></div>
+    <div id="confetti-container" aria-hidden="true"></div>
 
     <script>
-        const getNextNewYear = () => {
-            const now = new Date();
-            return new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0, 0);
-        };
+      /**
+       * Return the next Jan 1st 00:00:00 in the user's local timezone.
+       * (So in Germany, this naturally matches local midnight.)
+       */
+      function getNextNewYearDate() {
+        const now = new Date();
+        return new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0, 0);
+      }
 
-        const isGermanLocale = () => navigator.language.startsWith('de');
+      /**
+       * Tiny locale check. If the browser language starts with "de",
+       * we switch the UI strings to German.
+       */
+      function isGermanLocale() {
+        return (navigator.language || "").toLowerCase().startsWith("de");
+      }
 
-        const targetDate = getNextNewYear().getTime();
-        let countdownExpired = false;
+      // Cache DOM nodes (faster + cleaner than repeated getElementById calls)
+      const el = {
+        container: document.getElementById("countdown-container"),
+        title: document.getElementById("countdown-title"),
+        celebrate: document.getElementById("celebrate-text"),
 
-        const updateCountdownDisplay = (days, hours, minutes, seconds) => {
-            document.getElementById('days-segment').style.display = days > 0 ? 'inline-block' : 'none';
-            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+        daysSegment: document.getElementById("days-segment"),
+        hoursSegment: document.getElementById("hours-segment"),
+        minutesSegment: document.getElementById("minutes-segment"),
 
-            document.getElementById('hours-segment').style.display = hours > 0 || days > 0 ? 'inline-block' : 'none';
-            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+        days: document.getElementById("days"),
+        hours: document.getElementById("hours"),
+        minutes: document.getElementById("minutes"),
+        seconds: document.getElementById("seconds"),
 
-            document.getElementById('minutes-segment').style.display = minutes > 0 || hours > 0 || days > 0 ? 'inline-block' : 'none';
-            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+        daysLabel: document.getElementById("days-label"),
+        hoursLabel: document.getElementById("hours-label"),
+        minutesLabel: document.getElementById("minutes-label"),
+        secondsLabel: document.getElementById("seconds-label"),
 
-            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-        };
+        fireworks: document.getElementById("fireworks"),
+        confetti: document.getElementById("confetti-container"),
+      };
 
-        const triggerCelebration = () => {
-            document.getElementById('countdown-container').style.display = 'none';
-            document.getElementById('celebrate-text').style.display = 'block';
-            createFireworks();
-            createConfetti();
-        };
+      // Target moment (timestamp in ms)
+      const targetTimeMs = getNextNewYearDate().getTime();
 
-        const createFireworks = () => {
-            const fireworks = document.getElementById('fireworks');
-            for (let i = 0; i < 100; i++) {
-                const firework = document.createElement('div');
-                firework.classList.add('firework');
-                firework.style.setProperty('--tx', Math.random() * 2 - 1);
-                firework.style.setProperty('--ty', Math.random() * 2 - 1);
-                firework.style.left = Math.random() * window.innerWidth + 'px';
-                firework.style.top = Math.random() * window.innerHeight + 'px';
-                fireworks.appendChild(firework);
-            }
-        };
+      // Prevent double-triggering the celebration
+      let hasCelebrated = false;
 
-        const createConfetti = () => {
-            const confettiContainer = document.getElementById('confetti-container');
-            for (let i = 0; i < 200; i++) {
-                const confetti = document.createElement('div');
-                confetti.classList.add('confetti');
-                confetti.style.backgroundColor = getRandomColor();
-                confetti.style.left = Math.random() * window.innerWidth + 'px';
-                confetti.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                confettiContainer.appendChild(confetti);
-            }
-        };
+      // Confetti palette (kept small and punchy)
+      const CONFETTI_COLORS = [
+        "#FF5733",
+        "#FFC300",
+        "#DAF7A6",
+        "#581845",
+        "#C70039",
+        "#900C3F",
+      ];
 
-        const getRandomColor = () => {
-            const colors = ['#FF5733', '#FFC300', '#DAF7A6', '#581845', '#C70039', '#900C3F', '#FF5733'];
-            return colors[Math.floor(Math.random() * colors.length)];
-        };
+      function pad2(n) {
+        return String(n).padStart(2, "0");
+      }
 
-        const countdown = () => {
-            const now = Date.now();
-            const diffMs = targetDate - now;
+      /**
+       * Update the UI and hide segments when they are not needed
+       * (e.g. no days shown if days == 0).
+       */
+      function updateCountdownDisplay(days, hours, minutes, seconds) {
+        el.daysSegment.style.display = days > 0 ? "inline-block" : "none";
+        el.hoursSegment.style.display =
+          hours > 0 || days > 0 ? "inline-block" : "none";
+        el.minutesSegment.style.display =
+          minutes > 0 || hours > 0 || days > 0 ? "inline-block" : "none";
 
-            if (diffMs <= 0) {
-                updateCountdownDisplay(0, 0, 0, 0);
-                if (!countdownExpired) {
-                    triggerCelebration();
-                    countdownExpired = true;
-                }
-                return;
-            }
+        el.days.textContent = pad2(days);
+        el.hours.textContent = pad2(hours);
+        el.minutes.textContent = pad2(minutes);
+        el.seconds.textContent = pad2(seconds);
+      }
 
-            const totalSeconds = Math.ceil(diffMs / 1000);
+      /**
+       * Start the celebration visuals.
+       * We also clear old particles to avoid duplicating DOM nodes if this is ever re-run.
+       */
+      function triggerCelebration() {
+        el.container.style.display = "none";
+        el.celebrate.style.display = "block";
 
-            const days = Math.floor(totalSeconds / (60 * 60 * 24));
-            const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
-            const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
-            const seconds = totalSeconds % 60;
+        // Clear existing particles (safety)
+        el.fireworks.textContent = "";
+        el.confetti.textContent = "";
 
-            updateCountdownDisplay(days, hours, minutes, seconds);
-        };
+        createFireworks(120);
+        createConfetti(220);
+      }
 
-        const startSecondAlignedTicker = () => {
-            const tick = () => {
-                countdown();
-                if (countdownExpired) return;
+      /**
+       * Create "firework" particles at random screen positions.
+       * Each particle uses a little box-shadow sparkle and random direction variables.
+       */
+      function createFireworks(count) {
+        const w = window.innerWidth;
+        const h = window.innerHeight;
 
-                const delay = 1000 - (Date.now() % 1000);
-                setTimeout(tick, delay);
-            };
-            tick();
-        };
+        for (let i = 0; i < count; i++) {
+          const p = document.createElement("div");
+          p.className = "firework";
 
-        if (isGermanLocale()) {
-            document.getElementById('countdown-title').textContent = 'Silvester Countdown';
-            document.getElementById('days-label').textContent = 'Tage';
-            document.getElementById('hours-label').textContent = 'Stunden';
-            document.getElementById('minutes-label').textContent = 'Minuten';
-            document.getElementById('seconds-label').textContent = 'Sekunden';
+          // Random outward direction (-1..1)
+          p.style.setProperty("--tx", (Math.random() * 2 - 1).toFixed(3));
+          p.style.setProperty("--ty", (Math.random() * 2 - 1).toFixed(3));
+
+          // Random position on screen
+          p.style.left = Math.random() * w + "px";
+          p.style.top = Math.random() * h + "px";
+
+          // Sparkle effect: multiple tiny points from a single element
+          const color =
+            CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+          p.style.boxShadow = `
+          0 0 0 2px ${color},
+          8px 6px 0 1px ${color},
+          -6px 10px 0 1px ${color},
+          12px -8px 0 1px ${color},
+          -10px -6px 0 1px ${color}
+        `;
+
+          // Slight random timing offset so they don't sync perfectly
+          p.style.animationDelay = Math.random() * 1.2 + "s";
+
+          el.fireworks.appendChild(p);
+        }
+      }
+
+      /**
+       * Create falling confetti pieces.
+       */
+      function createConfetti(count) {
+        const w = window.innerWidth;
+
+        for (let i = 0; i < count; i++) {
+          const c = document.createElement("div");
+          c.className = "confetti";
+          c.style.backgroundColor =
+            CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)];
+          c.style.left = Math.random() * w + "px";
+
+          // Randomize duration and drift a bit with animation-delay
+          c.style.animationDuration = Math.random() * 3 + 3 + "s";
+          c.style.animationDelay = Math.random() * 2 + "s";
+
+          // Random size variance (small but noticeable)
+          const size = Math.floor(Math.random() * 8) + 6; // 6..13
+          c.style.width = size + "px";
+          c.style.height = size + "px";
+
+          el.confetti.appendChild(c);
+        }
+      }
+
+      /**
+       * Main countdown logic.
+       * Uses a "second-aligned" ticker so the display updates close to actual second boundaries.
+       */
+      function countdownTick() {
+        const nowMs = Date.now();
+        const diffMs = targetTimeMs - nowMs;
+
+        // Reached (or passed) the target time
+        if (diffMs <= 0) {
+          updateCountdownDisplay(0, 0, 0, 0);
+
+          if (!hasCelebrated) {
+            triggerCelebration();
+            hasCelebrated = true;
+          }
+          return;
         }
 
-        countdown();
-        startSecondAlignedTicker();
+        // Convert remaining milliseconds to whole seconds (ceil avoids showing -1 at boundaries)
+        const totalSeconds = Math.ceil(diffMs / 1000);
+
+        const days = Math.floor(totalSeconds / (60 * 60 * 24));
+        const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
+        const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+        const seconds = totalSeconds % 60;
+
+        updateCountdownDisplay(days, hours, minutes, seconds);
+      }
+
+      /**
+       * Runs countdownTick aligned to the next exact second boundary.
+       * This avoids "drifty" intervals over time.
+       */
+      function startSecondAlignedTicker() {
+        function tickLoop() {
+          countdownTick();
+          if (hasCelebrated) return;
+
+          const delay = 1000 - (Date.now() % 1000);
+          setTimeout(tickLoop, delay);
+        }
+        tickLoop();
+      }
+
+      // Localize UI text (German vs English)
+      if (isGermanLocale()) {
+        el.title.textContent = "Silvester Countdown";
+        el.daysLabel.textContent = "Tage";
+        el.hoursLabel.textContent = "Stunden";
+        el.minutesLabel.textContent = "Minuten";
+        el.secondsLabel.textContent = "Sekunden";
+        el.celebrate.textContent = "🎉 Frohes neues Jahr! 🎉";
+        document.title = "Silvester Countdown";
+      }
+
+      // Initial render + start ticking
+      countdownTick();
+      startSecondAlignedTicker();
+
+      // Optional: if someone resizes the window *after* celebration started,
+      // you can re-seed the effects to fit the new size.
+      window.addEventListener("resize", () => {
+        if (!hasCelebrated) return;
+        el.fireworks.textContent = "";
+        el.confetti.textContent = "";
+        createFireworks(120);
+        createConfetti(220);
+      });
     </script>
-</body>
+  </body>
 </html>
