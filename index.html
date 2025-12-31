@@ -154,36 +154,13 @@
     <script>
         const getNextNewYear = () => {
             const now = new Date();
-            const year = now.getFullYear();
-            return (now.getMonth() === 0 && now.getDate() === 1)
-                ? new Date(year + 1, 0, 1, 0, 0, 0)
-                : new Date(year, 11, 31, 23, 59, 59);
+            return new Date(now.getFullYear() + 1, 0, 1, 0, 0, 0, 0);
         };
 
         const isGermanLocale = () => navigator.language.startsWith('de');
 
         const targetDate = getNextNewYear().getTime();
         let countdownExpired = false;
-
-        const countdown = () => {
-            const now = new Date().getTime();
-            const distance = targetDate - now;
-
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            updateCountdownDisplay(days, hours, minutes, seconds);
-
-            if (distance < 0) {
-                clearInterval(interval);
-                if (!countdownExpired) {
-                    triggerCelebration();
-                    countdownExpired = true;
-                }
-            }
-        };
 
         const updateCountdownDisplay = (days, hours, minutes, seconds) => {
             document.getElementById('days-segment').style.display = days > 0 ? 'inline-block' : 'none';
@@ -235,6 +212,40 @@
             return colors[Math.floor(Math.random() * colors.length)];
         };
 
+        const countdown = () => {
+            const now = Date.now();
+            const diffMs = targetDate - now;
+
+            if (diffMs <= 0) {
+                updateCountdownDisplay(0, 0, 0, 0);
+                if (!countdownExpired) {
+                    triggerCelebration();
+                    countdownExpired = true;
+                }
+                return;
+            }
+
+            const totalSeconds = Math.ceil(diffMs / 1000);
+
+            const days = Math.floor(totalSeconds / (60 * 60 * 24));
+            const hours = Math.floor((totalSeconds % (60 * 60 * 24)) / (60 * 60));
+            const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+            const seconds = totalSeconds % 60;
+
+            updateCountdownDisplay(days, hours, minutes, seconds);
+        };
+
+        const startSecondAlignedTicker = () => {
+            const tick = () => {
+                countdown();
+                if (countdownExpired) return;
+
+                const delay = 1000 - (Date.now() % 1000);
+                setTimeout(tick, delay);
+            };
+            tick();
+        };
+
         if (isGermanLocale()) {
             document.getElementById('countdown-title').textContent = 'Silvester Countdown';
             document.getElementById('days-label').textContent = 'Tage';
@@ -243,8 +254,8 @@
             document.getElementById('seconds-label').textContent = 'Sekunden';
         }
 
-        const interval = setInterval(countdown, 1000);
         countdown();
+        startSecondAlignedTicker();
     </script>
 </body>
 </html>
