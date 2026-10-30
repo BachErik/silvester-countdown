@@ -4,33 +4,50 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>New Year's Eve Countdown</title>
-    <link rel="stylesheet" href="styles.css" />
+
+    <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
   </head>
+
   <body>
-    <div id="countdown-container">
+    <!-- Countdown card -->
+    <div
+      id="countdown-container"
+      role="group"
+      aria-label="Countdown to New Year"
+    >
       <h1 id="countdown-title">New Year's Eve Countdown</h1>
-      <div class="time-segment" id="days-segment">
-        <div class="countdown" id="days"></div>
-        <div class="label" id="days-label">Days</div>
-      </div>
-      <div class="time-segment" id="hours-segment">
-        <div class="countdown" id="hours"></div>
-        <div class="label" id="hours-label">Hours</div>
-      </div>
-      <div class="time-segment" id="minutes-segment">
-        <div class="countdown" id="minutes"></div>
-        <div class="label" id="minutes-label">Minutes</div>
-      </div>
-      <div class="time-segment" id="seconds-segment">
-        <div class="countdown" id="seconds"></div>
-        <div class="label" id="seconds-label">Seconds</div>
+
+      <!-- aria-live so screen readers get updates without being too spammy -->
+      <div aria-live="polite" aria-atomic="true">
+        <div class="time-segment" id="days-segment">
+          <div class="countdown" id="days">00</div>
+          <div class="label" id="days-label">Days</div>
+        </div>
+
+        <div class="time-segment" id="hours-segment">
+          <div class="countdown" id="hours">00</div>
+          <div class="label" id="hours-label">Hours</div>
+        </div>
+
+        <div class="time-segment" id="minutes-segment">
+          <div class="countdown" id="minutes">00</div>
+          <div class="label" id="minutes-label">Minutes</div>
+        </div>
+
+        <div class="time-segment" id="seconds-segment">
+          <div class="countdown" id="seconds">00</div>
+          <div class="label" id="seconds-label">Seconds</div>
+        </div>
       </div>
     </div>
 
+    <!-- Celebration overlay -->
     <h1 id="celebrate-text">🎉 Happy New Year! 🎉</h1>
 
-    <div id="fireworks"></div>
-    <div id="confetti-container"></div>
+    <!-- Effect layers -->
+    <div id="fireworks" aria-hidden="true"></div>
+    <div id="confetti-container" aria-hidden="true"></div>
+
   </body>
 </html>
