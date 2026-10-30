@@ -39,6 +39,14 @@ const el = {
   confetti: document.getElementById("confetti-container"),
 };
 
+// Handwritten snake digits (see snake.js); falls back to plain text if unavailable.
+const numbers = {
+  days: window.attachSnakeNumber(el.days),
+  hours: window.attachSnakeNumber(el.hours),
+  minutes: window.attachSnakeNumber(el.minutes),
+  seconds: window.attachSnakeNumber(el.seconds),
+};
+
 // Target moment (timestamp in ms)
 const targetTimeMs = getNextNewYearDate().getTime();
 
@@ -70,10 +78,10 @@ function updateCountdownDisplay(days, hours, minutes, seconds) {
   el.minutesSegment.style.display =
     minutes > 0 || hours > 0 || days > 0 ? "inline-block" : "none";
 
-  el.days.textContent = pad2(days);
-  el.hours.textContent = pad2(hours);
-  el.minutes.textContent = pad2(minutes);
-  el.seconds.textContent = pad2(seconds);
+  numbers.days.set(pad2(days));
+  numbers.hours.set(pad2(hours));
+  numbers.minutes.set(pad2(minutes));
+  numbers.seconds.set(pad2(seconds));
 }
 
 /**

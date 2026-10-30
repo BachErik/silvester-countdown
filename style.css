@@ -53,7 +53,41 @@ h1 {
   font-size: 4rem;
   letter-spacing: 2px;
   margin: 15px 0 6px;
-  animation: pulse 1s infinite;
+}
+
+/* Snake digits: the slots only reserve space, the canvas overlay draws the ink. */
+.snake-number {
+  height: 1.15em;
+  line-height: 1;
+}
+
+.digit-slots {
+  display: inline-flex;
+  height: 100%;
+}
+
+.digit-slot {
+  display: inline-block;
+  height: 100%;
+  aspect-ratio: 72 / 100; /* SLOT_W in snake.js */
+}
+
+#snake-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 11; /* above the countdown card */
+  color: #fff;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .label {
@@ -61,21 +95,6 @@ h1 {
   text-transform: uppercase;
   letter-spacing: 1px;
   opacity: 0.9;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.08);
-    opacity: 0.75;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
 }
 
 /* ---------------------------
