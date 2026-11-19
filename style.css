@@ -1,0 +1,177 @@
+/* ---------------------------
+ Base layout / reset
+ --------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  /* A cozy night-sky-ish gradient */
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+
+  font-family: Arial, sans-serif;
+  color: white;
+  text-align: center;
+  overflow: hidden; /* Keep confetti/fireworks contained */
+}
+
+/* ---------------------------
+ Countdown card
+ --------------------------- */
+#countdown-container {
+  display: inline-block;
+  padding: 20px 22px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  position: relative;
+  z-index: 10;
+  backdrop-filter: blur(6px);
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.time-segment {
+  display: inline-block;
+  margin: 0 10px;
+  min-width: 90px; /* Helps keep the layout stable */
+}
+
+.countdown {
+  font-size: 4rem;
+  letter-spacing: 2px;
+  margin: 15px 0 6px;
+}
+
+/* Snake digits: the slots only reserve space, the canvas overlay draws the ink. */
+.snake-number {
+  height: 1.15em;
+  line-height: 1;
+}
+
+.digit-slots {
+  display: inline-flex;
+  height: 100%;
+}
+
+.digit-slot {
+  display: inline-block;
+  height: 100%;
+  aspect-ratio: 72 / 100; /* SLOT_W in snake.js */
+}
+
+#snake-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 11; /* above the countdown card */
+  color: #fff;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.35));
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.label {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.9;
+}
+
+/* ---------------------------
+ Celebration text
+ --------------------------- */
+#celebrate-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4rem;
+  text-shadow: 4px 4px 20px rgba(255, 255, 255, 0.7);
+  display: none;
+  z-index: 20;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+/* ---------------------------
+ Fireworks particles
+ Each particle animates "outward" from its origin.
+ --------------------------- */
+.firework {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: transparent; /* We'll draw via box-shadow for a sparkle effect */
+  pointer-events: none;
+  z-index: 5;
+  animation: explode 1.5s infinite;
+}
+
+@keyframes explode {
+  0% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(
+      calc(160px * (var(--tx, 1))),
+      calc(160px * (var(--ty, 1)))
+    );
+    opacity: 0;
+  }
+}
+
+/* ---------------------------
+ Confetti squares
+ --------------------------- */
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  opacity: 0.85;
+  top: -12px;
+  z-index: 9999;
+  pointer-events: none;
+  animation: fall 5s linear infinite;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}
+
+/* ---------------------------
+ Accessibility: respect reduced motion preference
+ --------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .countdown,
+  .firework,
+  .confetti {
+    animation: none !important;
+  }
+}

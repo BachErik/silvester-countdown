@@ -6,7 +6,7 @@ Welcome to the **New Year's Eve Countdown**! This project provides a beautiful c
 
 - **Responsive Design**: The countdown looks great on both desktop and mobile devices, adjusting to various screen sizes.
 - **Dynamic Countdown**: Shows days, hours, minutes, and seconds remaining until the new year.
-- **Pulse Animation**: The numbers pulse to keep the countdown visually engaging.
+- **Handwritten Snake Digits**: Every digit is a handwritten stroke that behaves like a snake. When a digit changes, the snake is pulled out of the old digit where its stroke ended, swings out in a random direction and writes the new one. Each digit has four handwritten variants that are picked at random.
 - **Fireworks and Confetti**: Automatically triggered once the countdown reaches zero.
 - **Language Support**: Detects the user’s locale and switches between English and German.
 
@@ -24,6 +24,14 @@ Welcome to the **New Year's Eve Countdown**! This project provides a beautiful c
 
 2. **Open the countdown**:
    Open `index.html` in your web browser.
+
+## Handwritten Digits
+
+The digits in `numbers/<digit>/<variant>.svg` were drawn in Excalidraw. Those exports are filled outlines, so `tools/extract_centerlines.py` recovers each stroke's centerline and writing direction and writes them to `numbers/glyphs.js`. Re-run it after changing or adding SVGs:
+
+```bash
+python3 tools/extract_centerlines.py   # needs numpy
+```
 
 ## Localization
 
